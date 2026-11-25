@@ -43,3 +43,12 @@ document.getElementById('power').addEventListener('click',()=>{
   },100);
 });
 function updateClock(){document.getElementById('clock').textContent=new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Yekaterinburg'}).format(new Date())}updateClock();setInterval(updateClock,30000);
+
+const virusPointer=document.getElementById('virusPointer');
+document.addEventListener('pointermove',event=>{
+  if(event.pointerType==='touch')return;
+  virusPointer.style.transform=`translate3d(${event.clientX-20}px,${event.clientY-20}px,0)`;
+  virusPointer.classList.add('visible');
+});
+document.addEventListener('pointerout',event=>{if(!event.relatedTarget)virusPointer.classList.remove('visible')});
+window.addEventListener('blur',()=>virusPointer.classList.remove('visible'));

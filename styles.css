@@ -74,3 +74,6 @@ html,body,body *{cursor:url("virus-cursor.svg") 16 16,auto}
 @media(max-width:390px){.tile-small .tile-name{font-size:8.5px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:7.5px}}
 html,body,body *{cursor:url("virus-cursor.svg") 20 20,auto}
 html,body,body *,body *::before,body *::after{cursor:url("virus-cursor.svg") 20 20,auto!important}
+.virus-pointer{position:fixed;left:0;top:0;width:40px;height:40px;z-index:100000;pointer-events:none;opacity:0;display:none;transform:translate3d(-100px,-100px,0);will-change:transform}
+.virus-pointer.visible{opacity:1}
+@media(hover:hover) and (pointer:fine){html,body,body *,body *::before,body *::after{cursor:none!important}.virus-pointer{display:block}}
