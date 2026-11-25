@@ -52,3 +52,39 @@ document.addEventListener('pointermove',event=>{
 });
 document.addEventListener('pointerout',event=>{if(!event.relatedTarget)virusPointer.classList.remove('visible')});
 window.addEventListener('blur',()=>virusPointer.classList.remove('visible'));
+
+// Fine, lightweight snowfall stays behind the interface and never intercepts input.
+const snowCanvas=document.getElementById('snowfall');
+const snowContext=snowCanvas.getContext('2d',{alpha:true});
+const reduceSnowMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let snowWidth=0,snowHeight=0,snowRatio=1,snowflakes=[],snowFrame=0;
+function resizeSnow(){
+  snowRatio=Math.min(window.devicePixelRatio||1,2);
+  snowWidth=window.innerWidth;snowHeight=window.innerHeight;
+  snowCanvas.width=Math.round(snowWidth*snowRatio);snowCanvas.height=Math.round(snowHeight*snowRatio);
+  snowCanvas.style.width=`${snowWidth}px`;snowCanvas.style.height=`${snowHeight}px`;
+  snowContext.setTransform(snowRatio,0,0,snowRatio,0,0);
+  const count=Math.min(105,Math.max(34,Math.round(snowWidth/13)));
+  snowflakes=Array.from({length:count},()=>({x:Math.random()*snowWidth,y:Math.random()*snowHeight,r:.8+Math.random()*2.1,vy:.35+Math.random()*.9,vx:-.22+Math.random()*.44,phase:Math.random()*Math.PI*2,alpha:.22+Math.random()*.56,arms:Math.random()>.72}));
+  drawSnow(!reduceSnowMotion.matches);
+}
+function drawSnow(animate=true){
+  cancelAnimationFrame(snowFrame);
+  const tick=()=>{
+    snowContext.clearRect(0,0,snowWidth,snowHeight);
+    const time=performance.now()*.00025;
+    for(const flake of snowflakes){
+      if(animate){flake.y+=flake.vy;flake.x+=flake.vx+Math.sin(time+flake.phase)*.24;if(flake.y>snowHeight+8){flake.y=-8;flake.x=Math.random()*snowWidth}if(flake.x<-8)flake.x=snowWidth+8;if(flake.x>snowWidth+8)flake.x=-8}
+      snowContext.globalAlpha=flake.alpha;snowContext.fillStyle='#e9f7ff';
+      snowContext.beginPath();snowContext.arc(flake.x,flake.y,flake.r,0,Math.PI*2);snowContext.fill();
+      if(flake.arms&&flake.r>1.7){snowContext.save();snowContext.translate(flake.x,flake.y);snowContext.rotate(time*2+flake.phase);snowContext.strokeStyle='#d8f1ff';snowContext.lineWidth=.65;snowContext.beginPath();for(let arm=0;arm<6;arm++){snowContext.rotate(Math.PI/3);snowContext.moveTo(0,0);snowContext.lineTo(0,-flake.r*2.2);snowContext.moveTo(0,-flake.r*1.25);snowContext.lineTo(-flake.r*.55,-flake.r*1.65);snowContext.moveTo(0,-flake.r*1.25);snowContext.lineTo(flake.r*.55,-flake.r*1.65)}snowContext.stroke();snowContext.restore()}
+    }
+    snowContext.globalAlpha=1;
+    if(animate&&!document.hidden)snowFrame=requestAnimationFrame(tick);
+  };
+  tick();
+}
+window.addEventListener('resize',resizeSnow,{passive:true});
+reduceSnowMotion.addEventListener?.('change',()=>drawSnow(!reduceSnowMotion.matches));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(snowFrame);else drawSnow(!reduceSnowMotion.matches)});
+resizeSnow();
