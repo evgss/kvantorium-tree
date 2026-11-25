@@ -42,7 +42,6 @@ body.rebooting .progress span{width:var(--reboot-progress,0%)!important;backgrou
 @media(max-width:700px){.hero{gap:2px}.tree-wrap{width:100%;max-width:640px;padding:145px 6% 38px}.console{padding:17px 12px 12px}.tile{min-height:74px}.tile-small{min-height:78px}.group{gap:5px}.group-main,.group-small{margin-bottom:5px}.console-footer{flex-wrap:wrap;row-gap:6px}.footer-id{display:none!important}.house-base{height:15px}}
 @media(max-width:390px){.tree-wrap{padding:128px 5% 32px}.tile{min-height:68px}.tile-small{min-height:72px}.tile-small .tile-name{font-size:5.3px}.console-footer{gap:7px;font-size:4.2px}.console{padding-left:9px;padding-right:9px}}
 @media(max-width:820px) and (min-width:701px){.hero{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding-top:28px}.intro{padding:10px 0 8px}.intro h1{font-size:50px}.intro .lead{margin:15px 0 20px;max-width:520px}.tree-wrap{width:100%;max-width:760px;padding:150px 6% 40px}.console{padding:19px 18px 14px}.tile-small .tile-name{font-size:6.5px}}
-html,body,body *{cursor:url("virus-cursor.svg") 16 16,auto}
 .page{max-width:1760px;padding-left:4%;padding-right:4%}
 .hero{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 105px);padding:8px 0}
 .tree-wrap{width:min(100%,1360px);max-width:none;padding:170px 6% 55px;margin:0 auto}
@@ -72,8 +71,7 @@ html,body,body *{cursor:url("virus-cursor.svg") 16 16,auto}
 @media(max-width:390px){.tile{min-height:79px}.tile-small{min-height:88px}.tile-small .tile-name{font-size:7px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:6.5px}.console{padding-left:8px;padding-right:8px}}
 @media(max-width:700px){.group-small{grid-template-columns:repeat(3,minmax(0,1fr))}.tile-small .tile-icon{width:26px;height:26px}.tile-small .tile-name{font-size:9.5px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:8.5px;max-width:110px}}
 @media(max-width:390px){.tile-small .tile-name{font-size:8.5px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:7.5px}}
-html,body,body *{cursor:url("virus-cursor.svg") 20 20,auto}
-html,body,body *,body *::before,body *::after{cursor:url("virus-cursor.svg") 20 20,auto!important}
-.virus-pointer{position:fixed;left:0;top:0;width:40px;height:40px;z-index:100000;pointer-events:none;opacity:0;display:none;transform:translate3d(-100px,-100px,0);will-change:transform}
+/* The system cursor must never replace the custom virus, including over controls. */
+html,html *,html *::before,html *::after{cursor:none!important}
+.virus-pointer{position:fixed;left:0;top:0;width:40px;height:40px;z-index:2147483647;pointer-events:none;opacity:0;display:block;transform:translate3d(-100px,-100px,0);will-change:transform}
 .virus-pointer.visible{opacity:1}
-@media(hover:hover) and (pointer:fine){html,body,body *,body *::before,body *::after{cursor:none!important}.virus-pointer{display:block}}
