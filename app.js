@@ -57,7 +57,7 @@ window.addEventListener('blur',()=>virusPointer.classList.remove('visible'));
 const snowCanvas=document.getElementById('snowfall');
 const snowContext=snowCanvas.getContext('2d',{alpha:true});
 const reduceSnowMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
-let snowWidth=0,snowHeight=0,snowRatio=1,snowflakes=[],snowFrame=0;
+let snowWidth=0,snowHeight=0,snowRatio=1,snowflakes=[],snowFrame=0,comets=[],distantLights=[],nextCometAt=0;
 function resizeSnow(){
   snowRatio=Math.min(window.devicePixelRatio||1,2);
   snowWidth=window.innerWidth;snowHeight=window.innerHeight;
@@ -66,13 +66,19 @@ function resizeSnow(){
   snowContext.setTransform(snowRatio,0,0,snowRatio,0,0);
   const count=Math.min(105,Math.max(34,Math.round(snowWidth/13)));
   snowflakes=Array.from({length:count},()=>({x:Math.random()*snowWidth,y:Math.random()*snowHeight,r:.8+Math.random()*2.1,vy:.35+Math.random()*.9,vx:-.22+Math.random()*.44,phase:Math.random()*Math.PI*2,alpha:.22+Math.random()*.56,arms:Math.random()>.72}));
+  distantLights=Array.from({length:12},()=>({x:Math.random()*snowWidth,y:Math.random()*snowHeight,r:.7+Math.random()*.7,phase:Math.random()*Math.PI*2}));
+  comets=[];nextCometAt=performance.now()+5000+Math.random()*5000;
   drawSnow(!reduceSnowMotion.matches);
 }
 function drawSnow(animate=true){
   cancelAnimationFrame(snowFrame);
   const tick=()=>{
     snowContext.clearRect(0,0,snowWidth,snowHeight);
-    const time=performance.now()*.00025;
+    const now=performance.now(),time=now*.00025;
+    if(animate&&now>=nextCometAt){const angle=.32+Math.random()*.32,speed=3.2+Math.random()*1.6;comets.push({x:snowWidth*(.12+Math.random()*.68),y:snowHeight*(.06+Math.random()*.27),vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,age:0,life:65+Math.random()*25,length:58+Math.random()*62});nextCometAt=now+12000+Math.random()*11000}
+    for(const light of distantLights){const shimmer=animate?.42+.38*(.5+.5*Math.sin(now*.0012+light.phase)):.6;snowContext.globalAlpha=shimmer;snowContext.fillStyle='#b9e9ff';snowContext.shadowBlur=8;snowContext.shadowColor='#8ad8ff';snowContext.beginPath();snowContext.arc(light.x,light.y,light.r,0,Math.PI*2);snowContext.fill();snowContext.shadowBlur=0}
+    comets=comets.filter(comet=>comet.age<comet.life);
+    for(const comet of comets){const fade=Math.min(1,comet.age/12,(comet.life-comet.age)/18);if(animate){comet.x+=comet.vx;comet.y+=comet.vy;comet.age++}const ux=comet.vx/Math.hypot(comet.vx,comet.vy),uy=comet.vy/Math.hypot(comet.vx,comet.vy),tailX=comet.x-ux*comet.length,tailY=comet.y-uy*comet.length;const trail=snowContext.createLinearGradient(tailX,tailY,comet.x,comet.y);trail.addColorStop(0,'rgba(168,221,255,0)');trail.addColorStop(.72,`rgba(168,221,255,${.18*fade})`);trail.addColorStop(1,`rgba(240,250,255,${.85*fade})`);snowContext.globalAlpha=1;snowContext.strokeStyle=trail;snowContext.lineWidth=1.6;snowContext.shadowBlur=10;snowContext.shadowColor='#91d9ff';snowContext.beginPath();snowContext.moveTo(tailX,tailY);snowContext.lineTo(comet.x,comet.y);snowContext.stroke();snowContext.shadowBlur=0}
     for(const flake of snowflakes){
       if(animate){flake.y+=flake.vy;flake.x+=flake.vx+Math.sin(time+flake.phase)*.24;if(flake.y>snowHeight+8){flake.y=-8;flake.x=Math.random()*snowWidth}if(flake.x<-8)flake.x=snowWidth+8;if(flake.x>snowWidth+8)flake.x=-8}
       snowContext.globalAlpha=flake.alpha;snowContext.fillStyle='#e9f7ff';
