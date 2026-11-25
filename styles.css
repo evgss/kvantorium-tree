@@ -73,3 +73,4 @@ html,body,body *{cursor:url("virus-cursor.svg") 16 16,auto}
 @media(max-width:700px){.group-small{grid-template-columns:repeat(3,minmax(0,1fr))}.tile-small .tile-icon{width:26px;height:26px}.tile-small .tile-name{font-size:9.5px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:8.5px;max-width:110px}}
 @media(max-width:390px){.tile-small .tile-name{font-size:8.5px}.tile-small[data-name="ПРОМЫШЛЕННЫЙ ДИЗАЙН"] .tile-name{font-size:7.5px}}
 html,body,body *{cursor:url("virus-cursor.svg") 20 20,auto}
+html,body,body *,body *::before,body *::after{cursor:url("virus-cursor.svg") 20 20,auto!important}
